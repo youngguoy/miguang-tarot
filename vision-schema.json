@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "spreadKey": {
+      "type": "string",
+      "enum": ["general", "love", "career", "finance", "study", "choice", "timing", "self", "custom"]
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "cards": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string" },
+          "reversed": { "type": "boolean" },
+          "position": { "type": "string" }
+        },
+        "required": ["name", "reversed", "position"]
+      }
+    },
+    "analysis": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "verdict": { "type": "string" },
+        "cardReadings": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 10,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "title": { "type": "string" },
+              "keywords": { "type": "string" },
+              "relevance": { "type": "string" },
+              "advice": { "type": "string" }
+            },
+            "required": ["title", "keywords", "relevance", "advice"]
+          }
+        },
+        "relationships": { "type": "string" },
+        "synthesis": { "type": "string" },
+        "plum": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "basis": { "type": "string" },
+            "original": { "type": "string" },
+            "mutual": { "type": "string" },
+            "changed": { "type": "string" },
+            "interpretation": { "type": "string" }
+          },
+          "required": ["basis", "original", "mutual", "changed", "interpretation"]
+        },
+        "support": { "type": "string" },
+        "actions": { "type": "array", "minItems": 3, "maxItems": 4, "items": { "type": "string" } },
+        "energy": { "type": "string" },
+        "closingQuestion": { "type": "string" },
+        "disclaimer": { "type": "string" }
+      },
+      "required": ["verdict", "cardReadings", "relationships", "synthesis", "plum", "support", "actions", "energy", "closingQuestion", "disclaimer"]
+    }
+  },
+  "required": ["spreadKey", "confidence", "cards", "analysis"]
+}

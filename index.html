@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f6f2e8" />
+    <title>弥光 · 塔罗启示</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css?v=20260826c" />
+  </head>
+  <body>
+    <div class="grain" aria-hidden="true"></div>
+    <div class="aurora" aria-hidden="true">
+      <i class="aurora-blue"></i><i class="aurora-pink"></i><i class="aurora-gold"></i>
+    </div>
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar">
+        <div class="brand-row">
+          <div class="brand-mark" aria-hidden="true">✦</div>
+          <div><strong>弥光</strong><span>MYSTIC JOURNAL</span></div>
+          <button class="icon-button close-sidebar" id="closeSidebar" aria-label="关闭记录">×</button>
+        </div>
+        <button class="new-reading" id="newReading"><span>＋</span> 开启新的问询</button>
+        <div class="history-label"><span>你的问询</span><button id="clearHistory">清空</button></div>
+        <div class="history-list" id="historyList"></div>
+        <div class="sidebar-note"><span>◌</span><p>结果仅供自我探索与文化娱乐，不替代专业意见。</p></div>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <button class="icon-button menu-button" id="menuButton" aria-label="打开记录">☰</button>
+          <div class="stepper" aria-label="问询进度">
+            <div class="step is-active" data-step="question"><i>1</i><span>问询</span></div><b></b>
+            <div class="step" data-step="shuffle"><i>2</i><span>洗牌</span></div><b></b>
+            <div class="step" data-step="select"><i>3</i><span>选牌</span></div><b></b>
+            <div class="step" data-step="result"><i>4</i><span>启示</span></div>
+          </div>
+          <button class="sound-button" id="soundButton" aria-label="切换声音">♪ <span>氛围音</span></button>
+        </header>
+
+        <section class="screen question-screen is-visible" id="questionScreen">
+          <div class="stars" aria-hidden="true"><span>✦</span><span>·</span><span>✧</span></div>
+          <p class="kicker">THE QUESTION WITHIN</p>
+          <h1>把此刻的困惑，<em>交给牌面</em></h1>
+          <p class="lead">深呼吸，将注意力放回内心。一个清晰、开放的问题，会带来更有意义的启示。</p>
+          <form class="question-card" id="questionForm">
+            <label for="questionInput">你想问什么？ <small>选填</small></label>
+            <textarea id="questionInput" maxlength="120" placeholder="写下问题，或在这里直接粘贴你已经抽好的牌阵图片。"></textarea>
+            <div class="input-meta"><span id="questionHint">可输入文字，也支持 Ctrl／⌘ + V 粘贴图片</span><span id="charCount">0 / 120</span></div>
+            <div class="image-upload" id="imageUpload">
+              <input type="file" id="spreadImageInput" accept="image/jpeg,image/png,image/webp" hidden />
+              <label class="image-upload-trigger" for="spreadImageInput"><span>＋</span><strong>上传或粘贴已抽好的牌阵图片</strong><small>JPG、PNG 或 WebP，最大 10MB</small></label>
+              <div class="image-preview" id="imagePreview" hidden>
+                <img id="imagePreviewImg" alt="已上传的牌阵预览" />
+                <div><strong id="imageFileName"></strong><span>图片已附加，可继续在上方补充问题</span></div>
+                <button type="button" id="removeSpreadImage" aria-label="移除图片">×</button>
+              </div>
+            </div>
+            <div class="category-heading"><span>问题类型</span><small>可不选，系统会智能匹配</small></div>
+            <div class="category-row" id="categoryRow">
+              <button type="button" data-category="general">✦ 日常／其他</button>
+              <button type="button" data-category="love">♡ 感情关系</button>
+              <button type="button" data-category="career">⌁ 事业工作</button>
+              <button type="button" data-category="finance">◇ 财务资源</button>
+              <button type="button" data-category="study">⌘ 学业考试</button>
+              <button type="button" data-category="choice">⇆ 两难抉择</button>
+              <button type="button" data-category="timing">◷ 时间趋势</button>
+              <button type="button" data-category="self">☼ 自我成长</button>
+            </div>
+            <p class="category-help">普通问题、不属于明确主题的问题，选择“日常／其他”即可。</p>
+            <div class="default-agent"><span>✦</span><div><strong>默认由 Codex 解析</strong><small>自动读取问题、牌面与牌阵，无需选择模型</small></div></div>
+            <button class="primary-button" type="submit"><span id="submitModeLabel">进入仪式</span> <span>→</span></button>
+          </form>
+          <div class="privacy-note">◇ 你的问题与抽牌结果仅保存在当前浏览器</div>
+        </section>
+
+        <section class="screen image-screen" id="imageScreen">
+          <p class="kicker">IMAGE READING</p>
+          <h2>让 Codex 读取你的牌阵</h2>
+          <p class="lead" id="imageQuestionEcho"></p>
+          <div class="image-analysis-card">
+            <div class="uploaded-spread"><img id="imageAnalysisPreview" alt="待识别的塔罗牌阵" /></div>
+            <div class="image-analysis-copy">
+              <span class="vision-agent" id="visionAgentLabel">默认 Agent · 弥光</span>
+              <h3>识别后由你确认，再进入解析</h3>
+              <ol class="vision-steps">
+                <li><i>1</i><span><strong>识别牌面</strong><small>牌名与正逆位</small></span></li>
+                <li><i>2</i><span><strong>判断布局</strong><small>根据空间位置匹配牌阵</small></span></li>
+                <li><i>3</i><span><strong>人工确认</strong><small>修改识别错误后再解析</small></span></li>
+              </ol>
+              <p class="vision-status" id="visionStatus">开始后，图片将由本机 Codex 读取；识别结果仍需由你确认。</p>
+              <div class="vision-result" id="visionResult" hidden>
+                <div class="vision-result-heading"><strong>请确认识别结果</strong><label>牌阵 <select id="recognizedSpread"></select></label></div>
+                <div class="recognized-cards" id="recognizedCards"></div>
+                <button class="primary-button" type="button" id="confirmVisionResult">确认牌面并解析</button>
+              </div>
+              <button class="primary-button" type="button" id="startVisionAnalysis">开始 Codex 识别 <span>→</span></button>
+              <button class="text-button" type="button" id="backFromImage">返回修改</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="screen shuffle-screen" id="shuffleScreen">
+          <p class="kicker">THE RITUAL</p>
+          <h2>请在心中默念你的问题</h2>
+          <p class="lead" id="questionEcho"></p>
+          <div class="shuffle-stage" id="shuffleStage" aria-label="洗牌动画">
+            <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+            <div class="shuffle-deck" id="shuffleDeck"></div>
+            <div class="round-display"><strong id="roundNumber">1</strong><span>/ 3</span></div>
+          </div>
+          <div class="ritual-status"><span id="ritualText">第一遍 · 放下预设</span><div><i id="ritualProgress"></i></div></div>
+          <p class="soft-note">无需做任何事，让牌完成三次洗牌</p>
+        </section>
+
+        <section class="screen select-screen" id="selectScreen">
+          <p class="kicker">CHOOSE YOUR CARDS</p>
+          <h2>凭第一直觉，选择 <em id="neededCount">3</em> 张牌</h2>
+          <p class="spread-intro"><span id="spreadName">时间之流</span> · <span id="spreadDescription">看见事件如何流动</span></p>
+          <div class="selection-status"><span id="selectionCount">78 张中已选 0 / 3</span><button id="resetSelection">重新选择</button></div>
+          <div class="number-draw">
+            <div class="number-draw-copy"><strong>输入序列号抽牌</strong><span id="numberDrawHint">请从 1—78 中输入 3 个不重复数字</span></div>
+            <div class="sequence-inputs" id="sequenceInputs"></div>
+            <button type="button" id="applySequenceNumbers">按序列号选牌</button>
+          </div>
+          <div class="card-fan" id="cardFan" aria-label="待选塔罗牌"></div>
+          <button class="primary-button reveal-button" id="revealButton" disabled>揭示牌面 <span>✦</span></button>
+        </section>
+
+        <section class="screen result-screen" id="resultScreen">
+          <p class="kicker">YOUR READING</p>
+          <h2 id="resultTitle">牌面已经回应</h2>
+          <p class="lead result-question" id="resultQuestion"></p>
+          <p class="result-agent" id="resultAgent"></p>
+          <div class="spread-board" id="spreadBoard"></div>
+          <div class="share-reading">
+            <button type="button" id="shareReadingButton">↗ 分享抽牌结果</button>
+            <div class="share-panel" id="sharePanel" hidden>
+              <div><strong>分享链接</strong><span>任何网络均可打开，7 天后自动失效</span></div>
+              <input id="shareUrl" type="text" readonly aria-label="抽牌结果分享链接" />
+              <button type="button" id="copyShareUrl">复制链接</button>
+            </div>
+          </div>
+          <div class="reading-actions" id="readingActions">
+            <div><strong>需要看看这组牌在说什么吗？</strong><span>解析分为三个相互独立的视角</span></div>
+            <button class="ghost-button" id="saveOnlyButton">暂不解析</button>
+            <button class="primary-button compact" id="interpretButton">开始解析</button>
+          </div>
+          <div class="interpretation" id="interpretation" hidden>
+            <article><header><i>Ⅰ</i><div><strong>塔罗本义</strong><span>牌义、牌位与牌间关系</span></div></header><div id="tarotReading"></div></article>
+            <article><header><i>Ⅱ</i><div><strong>梅花易数</strong><span>仅依据抽牌序号与时间独立起卦</span></div></header><div id="plumReading"></div></article>
+            <article class="psychology"><header><i>Ⅲ</i><div><strong>给此刻的你</strong><span>综合前述主题的心理支持</span></div></header><div id="psychReading"></div></article>
+            <button class="ghost-button reinterpret-button" type="button" id="reinterpretButton">重新由 Codex 解析</button>
+            <p class="disclaimer">象征性解读用于启发自我觉察，不构成医疗、法律、投资或其他专业建议。</p>
+          </div>
+        </section>
+      </main>
+    </div>
+    <div class="history-context-menu" id="historyContextMenu" hidden role="menu" aria-label="问询记录操作">
+      <button type="button" data-action="pin" role="menuitem"><span>⌃</span><b id="pinMenuLabel">置顶记录</b></button>
+      <button type="button" data-action="delete" class="danger" role="menuitem"><span>×</span><b>删除记录</b></button>
+    </div>
+    <div class="toast" id="toast" role="status"></div>
+    <script src="app.js?v=20260826g"></script>
+  </body>
+</html>
